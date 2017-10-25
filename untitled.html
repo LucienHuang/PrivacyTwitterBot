@@ -3,11 +3,13 @@
 <head>
 	<title></title>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-	<script src="https://download.affectiva.com/js/3.1/affdex.js"></script>
+	<script src="https://download.affectiva.com/js/3.2/affdex.js"></script>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+
 </head>
 <body>
-  <div class="container-fluid">
+ <div class="container-fluid">
     <div class="row">
       <div class="col-md-8" id="affdex_elements" style="width:680px;height:480px;"></div>
       <div class="col-md-4">
@@ -25,7 +27,6 @@
       <button id="start" onclick="onStart()">Start</button>
       <button id="stop" onclick="onStop()">Stop</button>
       <button id="reset" onclick="onReset()">Reset</button>
-      <button id="reset" onclick="tweeting()">SENT</button>
       <h3>Affectiva JS SDK CameraDetector to track different emotions.</h3>
       <p>
         <strong>Instructions</strong>
@@ -38,9 +39,9 @@
   </div>
 
 
-	<script type="text/javascript">
-      // a();
-		      // SDK Needs to create video and canvas nodes in the DOM in order to function
+<script type="text/javascript">
+    
+       // SDK Needs to create video and canvas nodes in the DOM in order to function
       // Here we are adding those nodes a predefined div.
       var divRoot = $("#affdex_elements")[0];
       var width = 640;
@@ -84,8 +85,6 @@
           detector.stop();
         }
       };
-      
-      var last;
 
       //function executes when the Reset button is pushed.
       function onReset() {
@@ -118,7 +117,6 @@
       //The faces object contains the list of the faces detected in an image.
       //Faces object contains probabilities for all the different expressions, emotions and appearance metrics
       detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp) {
-      var timer = new Date();
         $('#results').html("");
         log('#results', "Timestamp: " + timestamp.toFixed(2));
         log('#results', "Number of faces found: " + faces.length);
@@ -131,11 +129,6 @@
             return val.toFixed ? Number(val.toFixed(0)) : val;
           }));
           log('#results', "Emoji: " + faces[0].emojis.dominantEmoji);
-          console.log(timer.getSeconds());
-          if(faces[0].emojis.dominantEmoji!=last){
-          tweeting(faces[0].emojis.dominantEmoji+faces[0].emojis.dominantEmoji+faces[0].emojis.dominantEmoji+' '+timer.getFullYear()+'-'+timer.getMonth()+'-'+timer.getDate()+' '+timer.getHours()+':'+timer.getMinutes()+':'+timer.getSeconds());
-          last = faces[0].emojis.dominantEmoji;
-          }
           drawFeaturePoints(image, faces[0].featurePoints);
         }
       });
@@ -154,18 +147,9 @@
           contxt.arc(featurePoints[id].x,
             featurePoints[id].y, 2, 0, 2 * Math.PI);
           contxt.stroke();
-
         }
       }
+  </script>
 
-      function tweeting(string){
-        var socket = io.connect('http://localhost:1180'); // connec to server
-    socket.on('news', function (data) { // listen to news event raised by the server
-    socket.emit('my other event', { my: string }); // raise an event on the server
-  });
-      }
-
-  
-	</script>
 </body>
 </html>
